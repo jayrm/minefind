@@ -534,12 +534,15 @@ type GRID
 
 		as CELL cells(any,any)
 
+		as long m_border_gridx, m_border_gridy
+		as long m_border_gridw, m_border_gridh
 		as long m_cols, m_rows
 		as long m_cellw, m_cellh
 		as long m_gridx, m_gridy
 		as long m_gridw, m_gridh
 		as long m_mines
 		as long m_flags
+		as boolean m_refresh
 
 		as boolean m_mouseClickLeft
 		as boolean m_mouseClickRight
@@ -556,7 +559,11 @@ type GRID
 		declare sub initGrid( byval x as long, byval y as long )
 
 	public:
-		declare constructor()
+		declare constructor _
+			( _
+				byval x as long, byval y as long, _
+				byval w as long, byval h as long _ 
+			)
 		declare destructor()
 
 		declare function getValueColor( byval value as long ) as ulong
@@ -615,7 +622,17 @@ end type
 '' ---------------------------------------------------------
 
 DEFN_SCOPE _
-constructor GRID()
+constructor GRID _
+	( _
+		byval x as long, byval y as long, _
+		byval w as long, byval h as long _
+	)
+
+	m_border_gridx = x
+	m_border_gridy = y
+	m_border_gridw = w
+	m_border_gridh = h
+
 	newGame( 10, 20, 35 )
 end constructor
 
@@ -709,12 +726,14 @@ sub GRID.newGame _
 
 	m_cols = cols
 	m_rows = rows
-	m_gridx = 16
-	m_gridy = 16
-	m_cellw = 200 \ cols
-	m_cellh = 400 \ rows
-	m_gridw = m_cellw * m_cols
-	m_gridh = m_cellh * m_rows
+	m_gridx = m_border_gridx
+	m_gridy = m_border_gridy
+	m_cellw = m_border_gridw \ m_cols
+	m_cellh = m_border_gridh \ m_rows
+	m_gridw = m_border_gridw
+	m_gridh = m_border_gridh
+
+	m_refresh = true
 
 	redim cells( 0 to m_cols-1, 0 to m_rows-1 )
 
@@ -850,6 +869,11 @@ sub GRID.render _
 	( _
 		byval force as boolean = false _
 	)
+
+	if( m_refresh = true ) then
+		gfx.drawBoxXYWH( m_gridx, m_gridy, m_gridw, m_gridh, COLOR_BACKGROUND )
+		m_refresh = false
+	end if
 
 	for y as long = 0 to m_rows-1
 		for x as long = 0 to m_cols-1
@@ -1008,7 +1032,7 @@ randomize frac( timer ) * 10000
 gfx.init()
 
 dim clk as CLOCK
-dim grd as GRID
+dim grd as GRID = GRID( 16, 16, 200, 400 )
 dim gui as GUI_CONTROLS
 
 '' add all the controls

@@ -20,7 +20,7 @@ randomize frac( timer ) * 10000
 gfx.init()
 
 dim clk as CLOCK
-dim grd as GRID
+dim grd as GRID = GRID( 16, 16, 200, 400 )
 dim gui as GUI_CONTROLS
 
 '' add all the controls
