@@ -3,7 +3,7 @@ Minefind
 
 Minesweeper game written in FreeBASIC
 
-![Minefind][images/minefind.png]
+![Minefind](images/minefind.png)
 
 Contents:
 ----------
