@@ -72,16 +72,19 @@ do
 
 	if( btnNew1.clickLeft = true ) then
 		grd.newGame( 6, 13, 10 )
+		clk.reset
 		lblResult.text = "Click minefield to start easy"
 	end if
 
 	if( btnNew2.clickLeft = true ) then
 		grd.newGame( 10, 20, 35 )
+		clk.reset
 		lblResult.text = "Click minefield to start medium"
 	end if
 
 	if( btnNew3.clickLeft = true ) then
 		grd.newGame( 13, 27, 75 )
+		clk.reset
 		lblResult.text = "Click minefield to start hard"
 	end if
 

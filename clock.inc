@@ -12,6 +12,7 @@ type CLOCK
 	declare destructor()
 
 	declare sub update()
+	declare sub reset()
 	declare property active( ) as boolean
 	declare property active( byval flag as boolean )
 	declare property value() as double
@@ -23,9 +24,7 @@ end type
 
 DEFN_SCOPE _
 constructor CLOCK()
-	m_active = false
-	m_time1 = 0
-	m_time2 = 0
+	reset()
 end constructor
 
 DEFN_SCOPE _
@@ -36,6 +35,13 @@ DEFN_SCOPE _
 property CLOCK.value() as double
 	value = m_time2 - m_time1
 end property
+
+DEFN_SCOPE _
+sub CLOCK.reset()
+	m_active = false
+	m_time1 = 0
+	m_time2 = 0
+end sub
 
 DEFN_SCOPE _
 sub CLOCK.update()
