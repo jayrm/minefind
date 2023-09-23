@@ -44,7 +44,7 @@ type GRID
 		declare constructor _
 			( _
 				byval x as long, byval y as long, _
-				byval w as long, byval h as long _ 
+				byval w as long, byval h as long _
 			)
 		declare destructor()
 
@@ -103,7 +103,7 @@ end type
 '' GRID implementation
 '' ---------------------------------------------------------
 
-DEFN_SCOPE _
+proc_scope _
 constructor GRID _
 	( _
 		byval x as long, byval y as long, _
@@ -118,12 +118,12 @@ constructor GRID _
 	newGame( 10, 20, 35 )
 end constructor
 
-DEFN_SCOPE _
+proc_scope _
 destructor GRID()
 	erase cells
 end destructor
 
-DEFN_SCOPE _
+proc_scope _
 function GRID.getValueColor( byval value as long ) as ulong
 	static clrs(0 to 8) as ulong = _
 		{ _
@@ -145,7 +145,7 @@ function GRID.getValueColor( byval value as long ) as ulong
 	end if
 end function
 
-DEFN_SCOPE _
+proc_scope _
 sub GRID.initGrid _
 	( _
 		byval xfirst as long, byval yfirst as long _
@@ -199,7 +199,7 @@ sub GRID.initGrid _
 	next
 end sub
 
-DEFN_SCOPE _
+proc_scope _
 sub GRID.newGame _
 	( _
 		byval cols as long, byval rows as long, _
@@ -248,7 +248,7 @@ sub GRID.newGame _
 
 end sub
 
-DEFN_SCOPE _
+proc_scope _
 function GRID.beginPlay _
 	( _
 		byval x as long, byval y as long _
@@ -271,7 +271,7 @@ function GRID.beginPlay _
 	return true
 end function
 
-DEFN_SCOPE _
+proc_scope _
 function GRID.isInGrid _
 	( _
 		byval x as long, byval y as long _
@@ -286,7 +286,7 @@ function GRID.isInGrid _
 	return true
 end function
 
-DEFN_SCOPE _
+proc_scope _
 sub GRID.drawCell _
 	( _
 		byval x as long, byval y as long, _
@@ -346,7 +346,7 @@ sub GRID.drawCell _
 	cells(x,y).dirty = false
 end sub
 
-DEFN_SCOPE _
+proc_scope _
 sub GRID.render _
 	( _
 		byval force as boolean = false _
@@ -364,7 +364,7 @@ sub GRID.render _
 	next
 end sub
 
-DEFN_SCOPE _
+proc_scope _
 sub GRID.updateMouse _
 	( _
 		byval mx as long, byval my as long, _
@@ -399,7 +399,7 @@ sub GRID.updateMouse _
 	end if
 end sub
 
-DEFN_SCOPE _
+proc_scope _
 sub GRID.showCell _
 	( _
 		byval x as long, byval y as long _
@@ -439,7 +439,7 @@ sub GRID.showCell _
 
 end sub
 
-DEFN_SCOPE _
+proc_scope _
 sub GRID.toggleFlag _
 	( _
 		byval x as long, byval y as long _
@@ -460,47 +460,47 @@ sub GRID.toggleFlag _
 	end if
 end sub
 
-DEFN_SCOPE _
+proc_scope _
 property GRID.mouseCol() as long
 	return m_mouseCol
 end property
 
-DEFN_SCOPE _
+proc_scope _
 property GRID.mouseRow() as long
 	return m_mouseRow
 end property
 
-DEFN_SCOPE _
+proc_scope _
 property GRID.clickLeft() as boolean
 	return m_mouseClickLeft
 end property
 
-DEFN_SCOPE _
+proc_scope _
 property GRID.clickRight() as boolean
 	return m_mouseClickRight
 end property
 
-DEFN_SCOPE _
+proc_scope _
 property GRID.playing() as boolean
 	return m_playing
 end property
 
-DEFN_SCOPE _
+proc_scope _
 property GRID.finished() as boolean
 	return m_won or m_lost
 end property
 
-DEFN_SCOPE _
+proc_scope _
 property GRID.won() as boolean
 	return m_won
 end property
 
-DEFN_SCOPE _
+proc_scope _
 property GRID.lost() as boolean
 	return m_lost
 end property
 
-DEFN_SCOPE _
+proc_scope _
 property GRID.flags() as long
 	return m_flags
 end property

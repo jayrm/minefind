@@ -6,14 +6,14 @@
 
 namespace gfx
 
-	DEFN_SCOPE _
+	proc_scope _
 	sub init()
 		screenres SCREENW, SCREENH, 32, 1
 		color COLOR_FOREGROUND,COLOR_BACKGROUND
 		cls
 	end sub
 
-	DEFN_SCOPE _
+	proc_scope _
 	sub drawLine _
 		( _
 			byval x1 as long, byval y1 as long, _
@@ -23,7 +23,7 @@ namespace gfx
 		line ( x1, y1 ) - ( x2, y2 ), clr
 	end sub
 
-	DEFN_SCOPE _
+	proc_scope _
 	sub drawBoxXYXY _
 		( _
 			byval x1 as long, byval y1 as long, _
@@ -33,7 +33,7 @@ namespace gfx
 		line ( x1, y1 ) - ( x2, y2 ), clr, bf
 	end sub
 
-	DEFN_SCOPE _
+	proc_scope _
 	sub drawRectXYWH _
 		( _
 			byval x as long, byval y as long, _
@@ -43,7 +43,7 @@ namespace gfx
 		line ( x, y ) - ( x+w-1, y+h-1 ), clr, b
 	end sub
 
-	DEFN_SCOPE _
+	proc_scope _
 	sub drawBoxXYWH _
 		( _
 			byval x as long, byval y as long, _
@@ -53,7 +53,7 @@ namespace gfx
 		line ( x, y ) - ( x+w-1, y+h-1 ), clr, bf
 	end sub
 
-	DEFN_SCOPE _
+	proc_scope _
 	sub drawCircle _
 		( _
 			byval xc as long, byval yc as long, _
@@ -63,7 +63,7 @@ namespace gfx
 		circle ( xc, yc ), r, clr, , , , f
 	end sub
 
-	DEFN_SCOPE _
+	proc_scope _
 	sub drawFlag _
 		( _
 			byval xc as long, byval yc as long, _
@@ -81,7 +81,7 @@ namespace gfx
 		drawLine( x2, y1, x2, y4, COLOR_FLAG )
 	end sub
 
-	DEFN_SCOPE _
+	proc_scope _
 	sub drawTextXY _
 		( _
 			byval x as long, byval y as long, _
@@ -91,7 +91,7 @@ namespace gfx
 		draw string (x,y), s, clr
 	end sub
 
-	DEFN_SCOPE _
+	proc_scope _
 	sub drawTextXYWH _
 		( _
 			byval x as long, byval y as long, _

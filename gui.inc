@@ -85,7 +85,7 @@ end type
 '' GUI_CONTROLS implementation
 '' ---------------------------------------------------------
 
-DEFN_SCOPE _
+proc_scope _
 function GUI_CONTROLS.addControl _
 	( _
 		byval id_type as CONTROLTYPEENUM, _
@@ -112,7 +112,7 @@ function GUI_CONTROLS.addControl _
 
 end function
 
-DEFN_SCOPE _
+proc_scope _
 function GUI_CONTROLS.addCaption _
 	( _
 		byval x as long, byval y as long, _
@@ -123,7 +123,7 @@ function GUI_CONTROLS.addCaption _
 	return addControl( CONTROLTYPE_CAPTION, x, y, w, h, text )
 end function
 
-DEFN_SCOPE _
+proc_scope _
 function GUI_CONTROLS.addButton _
 	( _
 		byval x as long, byval y as long, _
@@ -134,14 +134,14 @@ function GUI_CONTROLS.addButton _
 	return addControl( CONTROLTYPE_BUTTON, x, y, w, h, text )
 end function
 
-DEFN_SCOPE _
+proc_scope _
 sub GUI_CONTROLS.update()
 	for i as integer = 1 to m_ctrls_count
 		m_ctrls(i).update()
 	next
 end sub
 
-DEFN_SCOPE _
+proc_scope _
 sub GUI_CONTROLS.updateMouse _
 	( _
 		byval mx as long, byval my as long, _
@@ -152,14 +152,14 @@ sub GUI_CONTROLS.updateMouse _
 	next
 end sub
 
-DEFN_SCOPE _
+proc_scope _
 sub GUI_CONTROLS.render()
 	for i as integer = 1 to m_ctrls_count
 		m_ctrls(i).render()
 	next
 end sub
 
-DEFN_SCOPE _
+proc_scope _
 function GUI_CONTROLS.getControl _
 	( _
 		byval id as CONTROL_ID _
@@ -177,7 +177,7 @@ end function
 '' GUI_CONTROLS.CONTROL implementation
 '' ---------------------------------------------------------
 
-DEFN_SCOPE _
+proc_scope _
 function GUI_CONTROLS.CONTROL.isInControl _
 	( _
 		byval x as long, byval y as long _
@@ -193,11 +193,11 @@ function GUI_CONTROLS.CONTROL.isInControl _
 	return false
 end function
 
-DEFN_SCOPE _
+proc_scope _
 sub GUI_CONTROLS.CONTROL.update()
 end sub
 
-DEFN_SCOPE _
+proc_scope _
 sub GUI_CONTROLS.CONTROL.updateMouse _
 	( _
 		byval mx as long, byval my as long, _
@@ -234,7 +234,7 @@ sub GUI_CONTROLS.CONTROL.updateMouse _
 
 end sub
 
-DEFN_SCOPE _
+proc_scope _
 sub GUI_CONTROLS.CONTROL.render()
 
 	if( m_dirty = false ) then
@@ -269,12 +269,12 @@ sub GUI_CONTROLS.CONTROL.render()
 
 end sub
 
-DEFN_SCOPE _
+proc_scope _
 property GUI_CONTROLS.CONTROL.text() as string
 	return m_text
 end property
 
-DEFN_SCOPE _
+proc_scope _
 property GUI_CONTROLS.CONTROL.text( byref value as const string )
 	if( value <> m_text ) then
 		m_text = value
@@ -282,12 +282,12 @@ property GUI_CONTROLS.CONTROL.text( byref value as const string )
 	end if
 end property
 
-DEFN_SCOPE _
+proc_scope _
 property GUI_CONTROLS.CONTROL.highlight() as boolean
 	return m_highlight
 end property
 
-DEFN_SCOPE _
+proc_scope _
 property GUI_CONTROLS.CONTROL.highlight( byval value as boolean )
 	if( value <> m_highlight ) then
 		m_highlight = value
@@ -295,12 +295,12 @@ property GUI_CONTROLS.CONTROL.highlight( byval value as boolean )
 	end if
 end property
 
-DEFN_SCOPE _
+proc_scope _
 property GUI_CONTROLS.CONTROL.clickLeft() as boolean
 	return m_mouseClickLeft
 end property
 
-DEFN_SCOPE _
+proc_scope _
 property GUI_CONTROLS.CONTROL.clickRight() as boolean
 	return m_mouseClickRight
 end property

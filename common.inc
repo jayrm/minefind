@@ -5,9 +5,9 @@
 '' ---------------------------------------------------------
 
 #ifdef __FB_DEBUG__
-	#define DEFN_SCOPE public
+	#define proc_scope public
 #else
-	#define DEFN_SCOPE private
+	#define proc_scope private
 #endif
 
 
