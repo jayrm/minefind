@@ -21,7 +21,7 @@ gfx.init()
 
 dim clk as CLOCK
 dim grd as GRID = GRID( 16, 16, 200, 400 )
-dim gui as GUI_CONTROLS
+dim gui as FORM
 
 '' add all the controls
 var lblTitle_id  = gui.addCaption( 320,  16, 100, 16, "M I N E F I N D" )

@@ -1,8 +1,8 @@
 '' ---------------------------------------------------------
-'' GUI_CONTROLS declaration
+'' FORM declaration
 '' ---------------------------------------------------------
 
-type GUI_CONTROLS
+type FORM
 	type CONTROL_ID as long
 
 	enum CONTROLTYPEENUM
@@ -93,17 +93,17 @@ type GUI_CONTROLS
 end type
 
 '' ---------------------------------------------------------
-'' GUI_CONTROLS implementation
+'' FORM implementation
 '' ---------------------------------------------------------
 
 proc_scope _
-constructor GUI_CONTROLS.CONTROL _
+constructor FORM.CONTROL _
 	( _
 	)
 end constructor
 
 proc_scope _
-constructor GUI_CONTROLS.CONTROL _
+constructor FORM.CONTROL _
 	( _
 		byval controltype as CONTROLTYPEENUM, _
 		byval x as long, byval y as long, _
@@ -117,13 +117,13 @@ constructor GUI_CONTROLS.CONTROL _
 end constructor
 
 proc_scope _
-function GUI_CONTROLS.addControl _
+function FORM.addControl _
 	( _
 		byval id_type as CONTROLTYPEENUM, _
 		byval x as long, byval y as long, _
 		byval w as long, byval h as long, _
 		byref text as string _
-	) as GUI_CONTROLS.CONTROL_ID
+	) as FORM.CONTROL_ID
 
 	m_ctrls_count += 1
 	redim preserve m_ctrls( 1 to m_ctrls_count )
@@ -140,36 +140,36 @@ function GUI_CONTROLS.addControl _
 end function
 
 proc_scope _
-function GUI_CONTROLS.addCaption _
+function FORM.addCaption _
 	( _
 		byval x as long, byval y as long, _
 		byval w as long, byval h as long, _
 		byref text as string _
-	) as GUI_CONTROLS.CONTROL_ID
+	) as FORM.CONTROL_ID
 
 	return addControl( CONTROLTYPE_CAPTION, x, y, w, h, text )
 end function
 
 proc_scope _
-function GUI_CONTROLS.addButton _
+function FORM.addButton _
 	( _
 		byval x as long, byval y as long, _
 		byval w as long, byval h as long, _
 		byref text as string _
-	) as GUI_CONTROLS.CONTROL_ID
+	) as FORM.CONTROL_ID
 
 	return addControl( CONTROLTYPE_BUTTON, x, y, w, h, text )
 end function
 
 proc_scope _
-sub GUI_CONTROLS.update()
+sub FORM.update()
 	for i as integer = 1 to m_ctrls_count
 		m_ctrls(i).update()
 	next
 end sub
 
 proc_scope _
-sub GUI_CONTROLS.updateMouse _
+sub FORM.updateMouse _
 	( _
 		byval mx as long, byval my as long, _
 		byval mz as long, byval mb as long _
@@ -180,14 +180,14 @@ sub GUI_CONTROLS.updateMouse _
 end sub
 
 proc_scope _
-sub GUI_CONTROLS.render()
+sub FORM.render()
 	for i as integer = 1 to m_ctrls_count
 		m_ctrls(i).render()
 	next
 end sub
 
 proc_scope _
-function GUI_CONTROLS.getControl _
+function FORM.getControl _
 	( _
 		byval id as CONTROL_ID _
 	) byref as CONTROL
@@ -201,11 +201,11 @@ function GUI_CONTROLS.getControl _
 end function
 
 '' ---------------------------------------------------------
-'' GUI_CONTROLS.CONTROL implementation
+'' FORM.CONTROL implementation
 '' ---------------------------------------------------------
 
 proc_scope _
-function GUI_CONTROLS.CONTROL.isInControl _
+function FORM.CONTROL.isInControl _
 	( _
 		byval x as long, byval y as long _
 	) as boolean
@@ -221,11 +221,11 @@ function GUI_CONTROLS.CONTROL.isInControl _
 end function
 
 proc_scope _
-sub GUI_CONTROLS.CONTROL.update()
+sub FORM.CONTROL.update()
 end sub
 
 proc_scope _
-sub GUI_CONTROLS.CONTROL.updateMouse _
+sub FORM.CONTROL.updateMouse _
 	( _
 		byval mx as long, byval my as long, _
 		byval mz as long, byval mb as long _
@@ -262,7 +262,7 @@ sub GUI_CONTROLS.CONTROL.updateMouse _
 end sub
 
 proc_scope _
-sub GUI_CONTROLS.CONTROL.render()
+sub FORM.CONTROL.render()
 
 	if( m_dirty = false ) then
 		exit sub
@@ -297,12 +297,12 @@ sub GUI_CONTROLS.CONTROL.render()
 end sub
 
 proc_scope _
-property GUI_CONTROLS.CONTROL.text() as string
+property FORM.CONTROL.text() as string
 	return m_text
 end property
 
 proc_scope _
-property GUI_CONTROLS.CONTROL.text( byref value as const string )
+property FORM.CONTROL.text( byref value as const string )
 	if( value <> m_text ) then
 		m_text = value
 		m_dirty = true
@@ -310,24 +310,24 @@ property GUI_CONTROLS.CONTROL.text( byref value as const string )
 end property
 
 proc_scope _
-property GUI_CONTROLS.CONTROL.dirty() as boolean
+property FORM.CONTROL.dirty() as boolean
 	return m_dirty
 end property
 
 proc_scope _
-property GUI_CONTROLS.CONTROL.dirty( byval value as boolean )
+property FORM.CONTROL.dirty( byval value as boolean )
 	if( value <> m_dirty ) then
 		m_dirty = value
 	end if
 end property
 
 proc_scope _
-property GUI_CONTROLS.CONTROL.highlight() as boolean
+property FORM.CONTROL.highlight() as boolean
 	return m_highlight
 end property
 
 proc_scope _
-property GUI_CONTROLS.CONTROL.highlight( byval value as boolean )
+property FORM.CONTROL.highlight( byval value as boolean )
 	if( value <> m_highlight ) then
 		m_highlight = value
 		m_dirty = true
@@ -335,11 +335,11 @@ property GUI_CONTROLS.CONTROL.highlight( byval value as boolean )
 end property
 
 proc_scope _
-property GUI_CONTROLS.CONTROL.clickLeft() as boolean
+property FORM.CONTROL.clickLeft() as boolean
 	return m_mouseClickLeft
 end property
 
 proc_scope _
-property GUI_CONTROLS.CONTROL.clickRight() as boolean
+property FORM.CONTROL.clickRight() as boolean
 	return m_mouseClickRight
 end property
