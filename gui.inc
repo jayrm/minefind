@@ -12,39 +12,50 @@ type GUI_CONTROLS
 	end enum
 
 	type CONTROL
-		as CONTROLTYPEENUM m_controltype
-		as string m_text
-		as long m_x, m_y, m_w, m_h
-		as boolean m_dirty
-		as boolean m_highlight
-		as boolean m_mouseClickLeft
-		as boolean m_mouseClickRight
-		as long m_mouseButtons
-		as long m_mouseButtonsOld
+		private:
+			as CONTROLTYPEENUM m_controltype
+			as string m_text
+			as long m_x, m_y, m_w, m_h
+			as boolean m_dirty
+			as boolean m_highlight
+			as boolean m_mouseClickLeft
+			as boolean m_mouseClickRight
+			as long m_mouseButtons
+			as long m_mouseButtonsOld
 
-		declare function isInControl _
-			( _
-				byval x as long, byval y as long _
-			) as boolean
+		public:
+			declare constructor()
+			declare constructor _
+				( _
+					byval controltype as CONTROLTYPEENUM, _
+					byval x as long, byval y as long, _
+					byval w as long, byval h as long _
+				)
+			declare function isInControl _
+				( _
+					byval x as long, byval y as long _
+				) as boolean
 
-		declare sub update()
-		declare sub updateMouse _
-			( _
-				byval mx as long, byval my as long, _
-				byval mz as long, byval mb as long _
-			)
-		declare sub render()
-		declare property text() as string
-		declare property text( byref value as const string )
-		declare property highlight() as boolean
-		declare property highlight( byval value as boolean )
-		declare property clickLeft() as boolean
-		declare property clickRight() as boolean
+			declare sub update()
+			declare sub updateMouse _
+				( _
+					byval mx as long, byval my as long, _
+					byval mz as long, byval mb as long _
+				)
+			declare sub render()
+			declare property text() as string
+			declare property text( byref value as const string )
+			declare property highlight() as boolean
+			declare property highlight( byval value as boolean )
+			declare property clickLeft() as boolean
+			declare property clickRight() as boolean
+			declare property dirty() as boolean
+			declare property dirty( byval value as boolean )
 	end type
 
 	declare function addControl _
 		( _
-			byval id_type as CONTROLTYPEENUM, _
+			byval controltype as CONTROLTYPEENUM, _
 			byval x as long, byval y as long, _
 			byval w as long, byval h as long, _
 			byref text as string _
@@ -86,6 +97,26 @@ end type
 '' ---------------------------------------------------------
 
 proc_scope _
+constructor GUI_CONTROLS.CONTROL _
+	( _
+	)
+end constructor
+
+proc_scope _
+constructor GUI_CONTROLS.CONTROL _
+	( _
+		byval controltype as CONTROLTYPEENUM, _
+		byval x as long, byval y as long, _
+		byval w as long, byval h as long _
+	)
+	m_controltype = controltype
+	m_x = x
+	m_y = y
+	m_w = w
+	m_h = h
+end constructor
+
+proc_scope _
 function GUI_CONTROLS.addControl _
 	( _
 		byval id_type as CONTROLTYPEENUM, _
@@ -97,15 +128,11 @@ function GUI_CONTROLS.addControl _
 	m_ctrls_count += 1
 	redim preserve m_ctrls( 1 to m_ctrls_count )
 
-	with m_ctrls( m_ctrls_count )
-		.m_controltype = id_type
-		.m_x = x
-		.m_y = y
-		.m_w = w
-		.m_h = h
-		.m_text = text
+	m_ctrls( m_ctrls_count ) = CONTROL( id_type, x, y, w, h )
 
-		.m_dirty = true
+	with m_ctrls( m_ctrls_count )
+		.text = text
+		.dirty = true
 	end with
 
 	return m_ctrls_count
@@ -279,6 +306,18 @@ property GUI_CONTROLS.CONTROL.text( byref value as const string )
 	if( value <> m_text ) then
 		m_text = value
 		m_dirty = true
+	end if
+end property
+
+proc_scope _
+property GUI_CONTROLS.CONTROL.dirty() as boolean
+	return m_dirty
+end property
+
+proc_scope _
+property GUI_CONTROLS.CONTROL.dirty( byval value as boolean )
+	if( value <> m_dirty ) then
+		m_dirty = value
 	end if
 end property
 
