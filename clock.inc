@@ -5,17 +5,19 @@
 '' ---------------------------------------------------------
 
 type CLOCK
-	as boolean m_active
-	as double  m_time1, m_time2
+	private:
+		as boolean m_active
+		as double  m_time1, m_time2
 
-	declare constructor()
-	declare destructor()
+	public:
+		declare constructor()
+		declare destructor()
 
-	declare sub update()
-	declare sub reset()
-	declare property active( ) as boolean
-	declare property active( byval flag as boolean )
-	declare property value() as double
+		declare sub update()
+		declare sub reset()
+		declare property active( ) as boolean
+		declare property active( byval flag as boolean )
+		declare property value() as double
 end type
 
 '' ---------------------------------------------------------
