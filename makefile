@@ -15,6 +15,7 @@ SRCS += clock.inc
 SRCS += gui.inc
 SRCS += grid.inc
 SRCS += debug.inc
+SRCS += prng.inc
 
 COMBINED := minefind
 

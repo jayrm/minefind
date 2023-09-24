@@ -48,6 +48,8 @@ type GRID
 		as long m_cells_visible_count
 		as long m_cells_total
 
+		as RndFAST32 prng
+
 		declare sub initGrid( byval x as long, byval y as long )
 
 		declare sub getNeighbours _
@@ -191,8 +193,8 @@ sub GRID.initGrid _
 
 	'' randomly remove mines until we have the proper count
 	do while (count > m_mines )
-		dim xx as long = int( fix( rnd * m_cols ) )
-		dim yy as long = int( fix( rnd * m_rows ) )
+		dim xx as long = int( fix( prng.rnd() * m_cols ) )
+		dim yy as long = int( fix( prng.rnd() * m_rows ) )
 		if( cells( xx, yy ).value = -1 ) then
 			cells( xx, yy ).value = 0
 			count -= 1

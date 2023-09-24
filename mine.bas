@@ -13,6 +13,7 @@
 #include "gfx.inc"
 #include "gui.inc"
 #include "clock.inc"
+#include "prng.inc"
 #include "grid.inc"
 #include "debug.inc"
 
