@@ -36,10 +36,11 @@ dim as string k
 dim as long mx, my, mz, mb
 
 do
+	lblClock.text = "Time: " & str( int(clk.value) )
+	lblFlags.text = "Flags: " & grd.flags
+
 	clk.update()
 	gui.update()
-
-	lblClock.text = "Time: " & str( int(clk.value) )
 
 	k = inkey
 	select case k
@@ -76,25 +77,23 @@ do
 		lblResult.text = "Click minefield to start hard"
 	end if
 
-	lblFlags.text = "Flags: " & grd.flags
-
 	if( grd.playing = true ) then
 		if( grd.clickLeft ) then
 			grd.showCell( grd.mouseCol, grd.mouseRow )
 		elseif( grd.clickRight ) then
 			grd.toggleFlag( grd.mouseCol, grd.mouseRow )
 		end if
+	end if
 
-		if( grd.finished = true ) then
-			clk.active = false
-			if( grd.won = true ) then
-				lblResult.text = "Game won!"
-			elseif( grd.lost = true ) then
-				lblResult.text = "Game lost, try again."
-			end if
-		else
-			lblResult.text = ""
+	if( grd.finished = true ) then
+		clk.active = false
+		if( grd.won = true ) then
+			lblResult.text = "Game won!"
+		elseif( grd.lost = true ) then
+			lblResult.text = "Game lost, try again."
 		end if
+	else
+		lblResult.text = ""
 	end if
 
 	if( grd.finished = false ) then

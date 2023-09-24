@@ -8,7 +8,8 @@ type GRID
 
 	private:
 		type CELL
-			as boolean show
+			as long    x, y
+			as boolean visible
 			as boolean flag
 			as long    value
 			as boolean dirty
@@ -35,7 +36,7 @@ type GRID
 		as boolean m_playing
 		as boolean m_won
 		as boolean m_lost
-		as long m_cells_shown
+		as long m_cells_visible_count
 		as long m_cells_total
 
 		declare sub initGrid( byval x as long, byval y as long )
@@ -156,6 +157,8 @@ sub GRID.initGrid _
 
 	for y as long = 0 to m_rows-1
 		for x as long = 0 to m_cols-1
+			cells( x, y ).x = x
+			cells( x, y ).y = y
 			if( ((x >= xfirst-1) and _
 			     (x <= xfirst+1)) and _
 			    ((y <= yfirst+1) and _
@@ -232,7 +235,7 @@ sub GRID.newGame _
 	for y as long = 0 to m_rows-1
 		for x as long = 0 to m_cols-1
 			with cells(x,y)
-				.show = false
+				.visible = false
 				.flag = false
 				.value = 0
 				.dirty = true
@@ -243,7 +246,7 @@ sub GRID.newGame _
 	m_playing = false
 	m_won = false
 	m_lost = false
-	m_cells_shown = 0
+	m_cells_visible_count = 0
 	m_cells_total = m_cols * m_rows
 
 end sub
@@ -266,7 +269,7 @@ function GRID.beginPlay _
 	m_playing = true
 	m_won = false
 	m_lost = false
-	m_cells_shown = 0
+	m_cells_visible_count = 0
 
 	return true
 end function
@@ -311,7 +314,7 @@ sub GRID.drawCell _
 	dim yc as long = (y1+y2)\2+1
 
 	dim clr as ulong = any
-	if( cells(x,y).show = true ) then
+	if( cells(x,y).visible = true ) then
 		if( (x + y) mod 2 = 0 ) then
 			clr = COLOR_SHOWBACK1
 		else
@@ -327,7 +330,7 @@ sub GRID.drawCell _
 
 	gfx.drawBoxXYXY( x1, y1, x2, y2, clr )
 
-	if( cells(x,y).show = true ) then
+	if( cells(x,y).visible = true ) then
 		if( cells(x,y).value = -1 ) then
 			gfx.drawCircle( xc, yc, m_cellw\8+1, COLOR_MINE )
 		elseif( cells(x,y).value > 0 ) then
@@ -411,7 +414,7 @@ sub GRID.showCell _
 	if( cells( x, y ).flag = true ) then
 		exit sub
 	end if
-	if( cells( x, y ).show = true ) then
+	if( cells( x, y ).visible = true ) then
 		exit sub
 	end if
 
@@ -419,14 +422,14 @@ sub GRID.showCell _
 		m_playing = false
 		m_lost = true
 	else
-		m_cells_shown += 1
-		if( m_cells_shown + m_mines = m_cells_total ) then
+		m_cells_visible_count += 1
+		if( m_cells_visible_count + m_mines = m_cells_total ) then
 			m_playing = false
 			m_won = true
 		end if
 	end if
 
-	cells( x, y ).show = true
+	cells( x, y ).visible = true
 	cells( x, y ).dirty = true
 
 	if( cells( x, y ).value = 0 ) then
@@ -446,6 +449,9 @@ sub GRID.toggleFlag _
 	)
 
 	if( isInGrid( x, y ) = false ) then
+		exit sub
+	end if
+	if( cells( x, y ).visible = true ) then
 		exit sub
 	end if
 
