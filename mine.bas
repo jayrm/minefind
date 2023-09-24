@@ -2,7 +2,7 @@
 #cmdline "-s gui"
 #endif
 
-#define MINEFIND_VERSION  "1.0"
+#define MINEFIND_VERSION  "1.1"
 
 '' =========================================================
 '' MINEFIND
@@ -36,6 +36,7 @@ var byref lblFlags   = gui.addCaption( 320, 144, 100, 16, "" )
 var byref btnNew1    = gui.addButton ( 320, 244, 100, 16, "Easy 6x13"  )
 var byref btnNew2    = gui.addButton ( 320, 276, 100, 16, "Medium 10x20" )
 var byref btnNew3    = gui.addButton ( 320, 308, 100, 16, "Hard 13x27"  )
+var byref btnHint    = gui.addButton ( 320, 340, 100, 16, "Hint"  )
 var byref btnQuit    = gui.addButton ( 320, 400, 100, 16, "Quit"  )
 
 
@@ -85,6 +86,10 @@ do
 		grd.newGame( 13, 27, 75 )
 		clk.reset
 		lblResult.text = "Click minefield to start hard"
+	end if
+
+	if( (grd.playing = true) andalso (btnHint.clickLeft = true) ) then
+		grd.hint()
 	end if
 
 	if( grd.playing = true ) then

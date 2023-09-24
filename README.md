@@ -1,11 +1,10 @@
 Minefind
 ========
+Version 1.1
 
-Minesweeper clone game written in FreeBASIC
+Minesweeper clone written in FreeBASIC
 
 ![Minefind](images/minefind.png)
-
-Version 1.0
 
 Repository Contents:
 --------------------

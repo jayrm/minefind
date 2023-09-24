@@ -15,6 +15,15 @@ type GRID
 			as boolean dirty
 		end type
 
+		type CELL_LIST
+			as CELL ptr cells(0 to 8)
+			as long     count    '' total neighbours
+			as long     visible  '' shown with value
+			as long     hidden   '' hidden
+			as long     unknown  '' hidden, no flag
+			as long     flags    '' hidden, with flag
+		end type
+
 		as CELL cells(any,any)
 
 		as long m_border_gridx, m_border_gridy
@@ -40,6 +49,12 @@ type GRID
 		as long m_cells_total
 
 		declare sub initGrid( byval x as long, byval y as long )
+
+		declare sub getNeighbours _
+			( _
+				byref result as CELL_LIST, _
+				byval x as long, byval y as long _
+			)
 
 	public:
 		declare constructor _
@@ -98,6 +113,8 @@ type GRID
 		declare property won() as boolean
 		declare property lost() as boolean
 		declare property flags() as long
+
+		declare sub hint()
 end type
 
 '' ---------------------------------------------------------
@@ -510,3 +527,73 @@ proc_scope _
 property GRID.flags() as long
 	return m_flags
 end property
+
+proc_scope _
+sub GRID.getNeighbours _
+	( _
+		byref result as CELL_LIST, _
+		byval x as long, byval y as long _
+	)
+
+	result.count = 0
+	result.visible = 0
+	result.flags = 0
+	result.hidden = 0
+	result.unknown = 0
+
+	for yy as long = -1 to 1
+		for xx as long = -1 to 1
+			if( not ((xx=0) and (yy=0)) ) then
+				if( isInGrid( x+xx, y+yy ) = true ) then
+					result.count += 1
+					result.cells( result.count-1 ) = @cells( x+xx, y+yy )
+				end if
+			end if
+		next
+	next
+
+	for i as long = 0 to result.count-1
+		if( result.cells(i)->visible = true ) then
+			result.visible += 1
+		else
+			result.hidden += 1
+			if( result.cells(i)->flag = true ) then
+				result.flags += 1
+			else
+				result.unknown += 1
+			end if
+		end if
+	next
+end sub
+
+proc_scope _
+sub GRID.hint()
+	dim as CELL_LIST result
+	for y as long = 0 to m_rows-1
+		for x as long = 0 to m_cols-1
+			getNeighbours( result, x, y )
+
+			if( cells(x,y).visible = true ) then
+				if( result.unknown > 0 ) then
+					if( cells(x,y).value = result.hidden ) then
+						for i as long = 0 to result.count-1
+							if( result.cells(i)->flag = false ) then
+								toggleFlag( result.cells(i)->x, result.cells(i)->y )
+							end if
+						next
+						exit sub
+					end if
+
+					if( cells(x,y).value = result.flags ) then
+						for i as long = 0 to result.count-1
+							if( result.cells(i)->visible = false ) then
+								showCell( result.cells(i)->x, result.cells(i)->y )
+							end if
+						next
+						exit sub
+					end if
+				end if
+			end if
+		next
+	next
+end sub
