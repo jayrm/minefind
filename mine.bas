@@ -12,6 +12,7 @@
 #include "gui.inc"
 #include "clock.inc"
 #include "grid.inc"
+#include "debug.inc"
 
 '' ---------------------------------------------------------
 '' MAIN
@@ -62,18 +63,21 @@ do
 	end if
 
 	if( btnNew1.clickLeft = true ) then
+		debugPrint( "new game: easy" )
 		grd.newGame( 6, 13, 10 )
 		clk.reset
 		lblResult.text = "Click minefield to start easy"
 	end if
 
 	if( btnNew2.clickLeft = true ) then
+		debugPrint( "new game: medium" )
 		grd.newGame( 10, 20, 35 )
 		clk.reset
 		lblResult.text = "Click minefield to start medium"
 	end if
 
 	if( btnNew3.clickLeft = true ) then
+		debugPrint( "new game: hard" )
 		grd.newGame( 13, 27, 75 )
 		clk.reset
 		lblResult.text = "Click minefield to start hard"
@@ -81,9 +85,20 @@ do
 
 	if( grd.playing = true ) then
 		if( grd.clickLeft ) then
+			debugPrint( "show " & grd.mouseCol & ", " & grd.mouseRow )
 			grd.showCell( grd.mouseCol, grd.mouseRow )
 		elseif( grd.clickRight ) then
+			debugPrint( "flag " & grd.mouseCol & ", " & grd.mouseRow )
 			grd.toggleFlag( grd.mouseCol, grd.mouseRow )
+		end if
+	end if
+
+	if( grd.finished = false ) then
+		if( (grd.clickLeft = true) or (grd.clickRight = true) ) then
+			if( grd.beginPlay( grd.mouseCol, grd.mouseRow ) = true ) then
+				clk.active = true
+				grd.showCell( grd.mouseCol, grd.mouseRow )
+			end if
 		end if
 	end if
 
@@ -96,15 +111,6 @@ do
 		end if
 	else
 		lblResult.text = ""
-	end if
-
-	if( grd.finished = false ) then
-		if( (grd.clickLeft = true) or (grd.clickRight = true) ) then
-			if( grd.beginPlay( grd.mouseCol, grd.mouseRow ) = true ) then
-				clk.active = true
-				grd.showCell( grd.mouseCol, grd.mouseRow )
-			end if
-		end if
 	end if
 
 	screenlock

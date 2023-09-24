@@ -14,6 +14,7 @@ SRCS += gfx.inc
 SRCS += clock.inc
 SRCS += gui.inc
 SRCS += grid.inc
+SRCS += debug.inc
 
 COMBINED := minefind
 
