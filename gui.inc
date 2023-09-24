@@ -31,6 +31,7 @@ type FORM
 					byval x as long, byval y as long, _
 					byval w as long, byval h as long _
 				)
+
 			declare function isInControl _
 				( _
 					byval x as long, byval y as long _
@@ -53,30 +54,35 @@ type FORM
 			declare property dirty( byval value as boolean )
 	end type
 
+	static null_control as CONTROL
+
+	declare constructor()
+	declare destructor()
+
 	declare function addControl _
 		( _
 			byval controltype as CONTROLTYPEENUM, _
 			byval x as long, byval y as long, _
 			byval w as long, byval h as long, _
 			byref text as string _
-		) as CONTROL_ID
+		) byref as CONTROL
 
-	dim as CONTROL m_ctrls(any)
-	dim as long    m_ctrls_count
+	dim as CONTROL ptr m_ctrls(any)
+	dim as long        m_ctrls_count
 
 	declare function addCaption _
 		( _
 			byval x as long, byval y as long, _
 			byval w as long, byval h as long, _
 			byref text as string _
-		) as CONTROL_ID
+		) byref as CONTROL
 
 	declare function addButton _
 		( _
 			byval x as long, byval y as long, _
 			byval w as long, byval h as long, _
 			byref text as string _
-		) as CONTROL_ID
+		) byref as CONTROL
 
 	declare sub update()
 	declare sub updateMouse _
@@ -88,12 +94,118 @@ type FORM
 
 	declare function getControl _
 		( _
-			byval id as CONTROL_ID _
+			byval index as CONTROL_ID _
 		) byref as CONTROL
 end type
 
+dim as FORM.CONTROL FORM.null_control
+
 '' ---------------------------------------------------------
 '' FORM implementation
+'' ---------------------------------------------------------
+
+proc_scope _
+constructor FORM ()
+end constructor
+
+proc_scope _
+destructor FORM ()
+	for i as long = 1 to m_ctrls_count
+		delete m_ctrls(i)
+	next
+	erase m_ctrls
+end destructor
+
+proc_scope _
+function FORM.addControl _
+	( _
+		byval id_type as CONTROLTYPEENUM, _
+		byval x as long, byval y as long, _
+		byval w as long, byval h as long, _
+		byref text as string _
+	) byref as CONTROL
+
+	dim ctrl as CONTROL ptr = new CONTROL( id_type, x, y, w, h )
+
+	if( ctrl ) then
+		m_ctrls_count += 1
+		redim preserve m_ctrls( 1 to m_ctrls_count )
+		m_ctrls( m_ctrls_count ) = ctrl
+	end if
+
+	m_ctrls( m_ctrls_count ) = new CONTROL( id_type, x, y, w, h )
+
+	with *m_ctrls( m_ctrls_count )
+		.text = text
+		.dirty = true
+	end with
+
+	return *m_ctrls( m_ctrls_count )
+
+end function
+
+proc_scope _
+function FORM.addCaption _
+	( _
+		byval x as long, byval y as long, _
+		byval w as long, byval h as long, _
+		byref text as string _
+	) byref as FORM.CONTROL
+
+	return addControl( CONTROLTYPE_CAPTION, x, y, w, h, text )
+end function
+
+proc_scope _
+function FORM.addButton _
+	( _
+		byval x as long, byval y as long, _
+		byval w as long, byval h as long, _
+		byref text as string _
+	) byref as FORM.CONTROL
+
+	return addControl( CONTROLTYPE_BUTTON, x, y, w, h, text )
+end function
+
+proc_scope _
+sub FORM.update()
+	for i as integer = 1 to m_ctrls_count
+		m_ctrls(i)->update()
+	next
+end sub
+
+proc_scope _
+sub FORM.updateMouse _
+	( _
+		byval mx as long, byval my as long, _
+		byval mz as long, byval mb as long _
+	)
+	for i as integer = 1 to m_ctrls_count
+		m_ctrls(i)->updateMouse( mx, my, mz, mb )
+	next
+end sub
+
+proc_scope _
+sub FORM.render()
+	for i as integer = 1 to m_ctrls_count
+		m_ctrls(i)->render()
+	next
+end sub
+
+proc_scope _
+function FORM.getControl _
+	( _
+		byval index as CONTROL_ID _
+	) byref as CONTROL
+
+	if( (index >= 1) and (index <= m_ctrls_count) ) then
+		return *m_ctrls(index)
+	end if
+	return null_control
+
+end function
+
+'' ---------------------------------------------------------
+'' FORM.CONTROL implementation
 '' ---------------------------------------------------------
 
 proc_scope _
@@ -117,98 +229,14 @@ constructor FORM.CONTROL _
 end constructor
 
 proc_scope _
-function FORM.addControl _
-	( _
-		byval id_type as CONTROLTYPEENUM, _
-		byval x as long, byval y as long, _
-		byval w as long, byval h as long, _
-		byref text as string _
-	) as FORM.CONTROL_ID
-
-	m_ctrls_count += 1
-	redim preserve m_ctrls( 1 to m_ctrls_count )
-
-	m_ctrls( m_ctrls_count ) = CONTROL( id_type, x, y, w, h )
-
-	with m_ctrls( m_ctrls_count )
-		.text = text
-		.dirty = true
-	end with
-
-	return m_ctrls_count
-
-end function
-
-proc_scope _
-function FORM.addCaption _
-	( _
-		byval x as long, byval y as long, _
-		byval w as long, byval h as long, _
-		byref text as string _
-	) as FORM.CONTROL_ID
-
-	return addControl( CONTROLTYPE_CAPTION, x, y, w, h, text )
-end function
-
-proc_scope _
-function FORM.addButton _
-	( _
-		byval x as long, byval y as long, _
-		byval w as long, byval h as long, _
-		byref text as string _
-	) as FORM.CONTROL_ID
-
-	return addControl( CONTROLTYPE_BUTTON, x, y, w, h, text )
-end function
-
-proc_scope _
-sub FORM.update()
-	for i as integer = 1 to m_ctrls_count
-		m_ctrls(i).update()
-	next
-end sub
-
-proc_scope _
-sub FORM.updateMouse _
-	( _
-		byval mx as long, byval my as long, _
-		byval mz as long, byval mb as long _
-	)
-	for i as integer = 1 to m_ctrls_count
-		m_ctrls(i).updateMouse( mx, my, mz, mb )
-	next
-end sub
-
-proc_scope _
-sub FORM.render()
-	for i as integer = 1 to m_ctrls_count
-		m_ctrls(i).render()
-	next
-end sub
-
-proc_scope _
-function FORM.getControl _
-	( _
-		byval id as CONTROL_ID _
-	) byref as CONTROL
-
-	static null_control as CONTROL
-	if( (id >= 1) and (id <= m_ctrls_count) ) then
-		return m_ctrls(id)
-	end if
-	return null_control
-
-end function
-
-'' ---------------------------------------------------------
-'' FORM.CONTROL implementation
-'' ---------------------------------------------------------
-
-proc_scope _
 function FORM.CONTROL.isInControl _
 	( _
 		byval x as long, byval y as long _
 	) as boolean
+
+	if( m_controltype = CONTROLTYPEENUM.CONTROLTYPE_UNKOWN ) then
+		return false
+	end if
 
 	if( (x >= m_x) and _
 	    (x <= m_x+m_w-1) and _
@@ -230,6 +258,10 @@ sub FORM.CONTROL.updateMouse _
 		byval mx as long, byval my as long, _
 		byval mz as long, byval mb as long _
 	)
+
+	if( m_controltype = CONTROLTYPEENUM.CONTROLTYPE_UNKOWN ) then
+		exit sub
+	end if
 
 	m_mouseButtonsOld = m_mouseButtons
 
@@ -263,6 +295,10 @@ end sub
 
 proc_scope _
 sub FORM.CONTROL.render()
+
+	if( m_controltype = CONTROLTYPEENUM.CONTROLTYPE_UNKOWN ) then
+		exit sub
+	end if
 
 	if( m_dirty = false ) then
 		exit sub
@@ -298,11 +334,19 @@ end sub
 
 proc_scope _
 property FORM.CONTROL.text() as string
+	if( m_controltype = CONTROLTYPEENUM.CONTROLTYPE_UNKOWN ) then
+		return ""
+	end if
+
 	return m_text
 end property
 
 proc_scope _
 property FORM.CONTROL.text( byref value as const string )
+	if( m_controltype = CONTROLTYPEENUM.CONTROLTYPE_UNKOWN ) then
+		exit property
+	end if
+
 	if( value <> m_text ) then
 		m_text = value
 		m_dirty = true
@@ -311,11 +355,19 @@ end property
 
 proc_scope _
 property FORM.CONTROL.dirty() as boolean
+	if( m_controltype = CONTROLTYPEENUM.CONTROLTYPE_UNKOWN ) then
+		return false
+	end if
+
 	return m_dirty
 end property
 
 proc_scope _
 property FORM.CONTROL.dirty( byval value as boolean )
+	if( m_controltype = CONTROLTYPEENUM.CONTROLTYPE_UNKOWN ) then
+		exit property
+	end if
+
 	if( value <> m_dirty ) then
 		m_dirty = value
 	end if
@@ -323,11 +375,19 @@ end property
 
 proc_scope _
 property FORM.CONTROL.highlight() as boolean
+	if( m_controltype = CONTROLTYPEENUM.CONTROLTYPE_UNKOWN ) then
+		return false
+	end if
+
 	return m_highlight
 end property
 
 proc_scope _
 property FORM.CONTROL.highlight( byval value as boolean )
+	if( m_controltype = CONTROLTYPEENUM.CONTROLTYPE_UNKOWN ) then
+		exit property
+	end if
+
 	if( value <> m_highlight ) then
 		m_highlight = value
 		m_dirty = true
@@ -336,10 +396,18 @@ end property
 
 proc_scope _
 property FORM.CONTROL.clickLeft() as boolean
+	if( m_controltype = CONTROLTYPEENUM.CONTROLTYPE_UNKOWN ) then
+		return false
+	end if
+
 	return m_mouseClickLeft
 end property
 
 proc_scope _
 property FORM.CONTROL.clickRight() as boolean
+	if( m_controltype = CONTROLTYPEENUM.CONTROLTYPE_UNKOWN ) then
+		return false
+	end if
+
 	return m_mouseClickRight
 end property

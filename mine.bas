@@ -23,27 +23,14 @@ dim clk as CLOCK
 dim grd as GRID = GRID( 16, 16, 200, 400 )
 dim gui as FORM
 
-'' add all the controls
-var lblTitle_id  = gui.addCaption( 320,  16, 100, 16, "M I N E F I N D" )
-var lblClock_id  = gui.addCaption( 320,  80, 100, 16, "Time: 0" )
-var lblResult_id = gui.addCaption( 220, 112, 300, 16, "" )
-var lblFlags_id  = gui.addCaption( 320, 144, 100, 16, "" )
-var btnNew1_id   = gui.addButton ( 320, 244, 100, 16, "Easy 6x13"  )
-var btnNew2_id   = gui.addButton ( 320, 276, 100, 16, "Medium 10x20" )
-var btnNew3_id   = gui.addButton ( 320, 308, 100, 16, "Hard 13x27"  )
-var btnQuit_id   = gui.addButton ( 320, 400, 100, 16, "Quit"  )
-
-'' before getting references
-var byref lblTitle = gui.getControl( lblTitle_id )
-var byref lblClock = gui.GetControl( lblClock_id )
-var byref lblResult = gui.GetControl( lblResult_id )
-var byref lblFlags = gui.GetControl( lblFlags_id )
-var byref btnNew1 = gui.getControl( btnNew1_id )
-var byref btnNew2 = gui.GetControl( btnNew2_id )
-var byref btnNew3 = gui.GetControl( btnNew3_id )
-var byref btnQuit = gui.GetControl( btnQuit_id )
-
-grd.render( true )
+var byref lblTitle  = gui.addCaption( 320,  16, 100, 16, "M I N E F I N D" )
+var byref lblClock  = gui.addCaption( 320,  80, 100, 16, "Time: 0" )
+var byref lblResult = gui.addCaption( 220, 112, 300, 16, "" )
+var byref lblFlags  = gui.addCaption( 320, 144, 100, 16, "" )
+var byref btnNew1   = gui.addButton ( 320, 244, 100, 16, "Easy 6x13"  )
+var byref btnNew2   = gui.addButton ( 320, 276, 100, 16, "Medium 10x20" )
+var byref btnNew3   = gui.addButton ( 320, 308, 100, 16, "Hard 13x27"  )
+var byref btnQuit   = gui.addButton ( 320, 400, 100, 16, "Quit"  )
 
 dim as string k
 dim as long mx, my, mz, mb
@@ -51,6 +38,7 @@ dim as long mx, my, mz, mb
 do
 	clk.update()
 	gui.update()
+
 	lblClock.text = "Time: " & str( int(clk.value) )
 
 	k = inkey
