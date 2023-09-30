@@ -58,6 +58,14 @@ type GRID
 				byval x as long, byval y as long _
 			)
 
+		declare sub getNeighbours _
+			( _
+				byref result as CELL_LIST, _
+				byref c as CELL _
+			)
+
+		declare function hintSelf( byref c as CELL ) as boolean
+		declare function hintNeighbour( byref c as CELL ) as boolean
 	public:
 		declare constructor _
 			( _
@@ -116,7 +124,7 @@ type GRID
 		declare property lost() as boolean
 		declare property flags() as long
 
-		declare sub hint()
+		declare function hint() as boolean
 end type
 
 '' ---------------------------------------------------------
@@ -545,16 +553,18 @@ sub GRID.getNeighbours _
 
 	for yy as long = -1 to 1
 		for xx as long = -1 to 1
-			if( not ((xx=0) and (yy=0)) ) then
+			if( (xx = 0) and (yy = 0) ) then
+				result.cells(0) = @cells( x+xx, y+yy )
+			else
 				if( isInGrid( x+xx, y+yy ) = true ) then
 					result.count += 1
-					result.cells( result.count-1 ) = @cells( x+xx, y+yy )
+					result.cells( result.count ) = @cells( x+xx, y+yy )
 				end if
 			end if
 		next
 	next
 
-	for i as long = 0 to result.count-1
+	for i as long = 1 to result.count
 		if( result.cells(i)->visible = true ) then
 			result.visible += 1
 		else
@@ -569,33 +579,109 @@ sub GRID.getNeighbours _
 end sub
 
 proc_scope _
-sub GRID.hint()
-	dim as CELL_LIST result
-	for y as long = 0 to m_rows-1
-		for x as long = 0 to m_cols-1
-			getNeighbours( result, x, y )
+sub GRID.getNeighbours _
+	( _
+		byref result as CELL_LIST, _
+		byref c as CELL _
+	)
+	getNeighbours( result, c.x, c.y )
+end sub
 
-			if( cells(x,y).visible = true ) then
-				if( result.unknown > 0 ) then
-					if( cells(x,y).value = result.hidden ) then
-						for i as long = 0 to result.count-1
-							if( result.cells(i)->flag = false ) then
-								toggleFlag( result.cells(i)->x, result.cells(i)->y )
-							end if
-						next
-						exit sub
-					end if
+proc_scope _
+function GRID.hintSelf( byref c as CELL ) as boolean
+	dim as CELL_LIST r1
 
-					if( cells(x,y).value = result.flags ) then
-						for i as long = 0 to result.count-1
-							if( result.cells(i)->visible = false ) then
-								showCell( result.cells(i)->x, result.cells(i)->y )
-							end if
-						next
-						exit sub
-					end if
+	if( c.visible = false ) then
+		return false
+	end if
+
+	getNeighbours( r1, c )
+
+	if( r1.unknown = 0 ) then
+		return false
+	endif
+
+	'' all neighbours must be flags?
+	if( c.value = r1.hidden ) then
+		for i as long = 1 to r1.count
+			if( r1.cells(i)->visible = false ) then
+				if( r1.cells(i)->flag = false ) then
+					toggleFlag( r1.cells(i)->x, r1.cells(i)->y )
+					return true
 				end if
 			end if
 		next
+	end if
+
+	'' all remaining neighbours can be shown?
+	if( c.value = r1.flags ) then
+		for i as long = 1 to r1.count
+			if( r1.cells(i)->flag = false ) then
+				if( r1.cells(i)->visible = false ) then
+					showCell( r1.cells(i)->x, r1.cells(i)->y )
+					return true
+				end if
+			end if
+		next
+	end if
+end function
+
+proc_scope _
+function GRID.hintNeighbour( byref c as CELL ) as boolean
+
+	dim as CELL_LIST r1, r2
+
+	if( c.visible = false ) then
+		return false
+	end if
+
+	getNeighbours( r1, c )
+
+	if( r1.unknown = 0 ) then
+		return false
+	endif
+
+	if( c.value - r1.flags > 1 ) then
+		return false
+	end if
+
+	for i as long = 1 to r1.count
+
+		getNeighbours( r2, *r1.cells(i) )
+
+		if( r2.unknown = 0 ) then
+			continue for
+		end if
+
+		if( r2.cells(0)->value - r2.flags > 1 ) then
+			debugPrint( "here" )
+		end if
 	next
-end sub
+
+	return false
+end function
+
+proc_scope _
+function GRID.hint() as boolean
+
+	'' check cell's value with neighbours status
+	for y as long = 0 to m_rows-1
+		for x as long = 0 to m_cols-1
+			var byref c = cells( x, y )
+			if( hintSelf(c) = true ) then
+				return true
+			end if
+		next
+	next
+
+	'' single neighbour differing by one unknown
+	for y as long = 0 to m_rows-1
+		for x as long = 0 to m_cols-1
+			var byref c = cells( x, y )
+			if( hintNeighbour(c) = true ) then
+				return true
+			end if
+		next
+	next
+	return false
+end function

@@ -10,12 +10,12 @@
 
 #include "fbgfx.bi"
 #include "common.inc"
+#include "debug.inc"
 #include "gfx.inc"
 #include "gui.inc"
 #include "clock.inc"
 #include "prng.inc"
 #include "grid.inc"
-#include "debug.inc"
 
 '' ---------------------------------------------------------
 '' MAIN
@@ -29,17 +29,17 @@ dim clk as CLOCK
 dim grd as GRID = GRID( 16, 16, 200, 400 )
 dim gui as FORM
 
-var byref lblTitle   = gui.addCaption( 320,  16, 100, 16, "M I N E F I N D" )
-var byref lblVersion = gui.addCaption( 320,  40, 100, 16, "Version " & MINEFIND_VERSION )
-var byref lblClock   = gui.addCaption( 320,  80, 100, 16, "Time: 0" )
-var byref lblResult  = gui.addCaption( 220, 112, 300, 16, "" )
-var byref lblFlags   = gui.addCaption( 320, 144, 100, 16, "" )
-var byref btnNew1    = gui.addButton ( 320, 244, 100, 16, "Easy 6x13"  )
-var byref btnNew2    = gui.addButton ( 320, 276, 100, 16, "Medium 10x20" )
-var byref btnNew3    = gui.addButton ( 320, 308, 100, 16, "Hard 13x27"  )
-var byref btnHint    = gui.addButton ( 320, 340, 100, 16, "Hint"  )
-var byref btnQuit    = gui.addButton ( 320, 400, 100, 16, "Quit"  )
-
+var byref lblTitle   = gui.addCaption( 320,  16, 160, 24, "M I N E F I N D" )
+var byref lblVersion = gui.addCaption( 320,  40, 160, 24, "Version " & MINEFIND_VERSION )
+var byref lblClock   = gui.addCaption( 320,  80, 160, 24, "Time: 0" )
+var byref lblResult  = gui.addCaption( 320, 112, 160, 24, "" )
+var byref lblFlags   = gui.addCaption( 320, 144, 160, 24, "" )
+var byref btnNew1    = gui.addButton ( 320, 208, 160, 24, "Easy 6x13"  )
+var byref btnNew2    = gui.addButton ( 320, 240, 160, 24, "Medium 10x20" )
+var byref btnNew3    = gui.addButton ( 320, 272, 160, 24, "Hard 13x27"  )
+var byref btnHint    = gui.addButton ( 320, 304, 160, 24, "Hint"  )
+var byref btnSolve   = gui.addButton ( 320, 336, 160, 24, "Solve"  )
+var byref btnQuit    = gui.addButton ( 320, 368, 160, 24, "Quit"  )
 
 dim as string k
 dim as long mx, my, mz, mb
@@ -89,8 +89,15 @@ do
 		lblResult.text = "Click minefield to start hard"
 	end if
 
-	if( (grd.playing = true) andalso (btnHint.clickLeft = true) ) then
-		grd.hint()
+	if( grd.playing = true ) then
+		if( btnHint.clickLeft = true ) then
+			debugPrint( "hint: 1 step" )
+			grd.hint()
+		elseif( btnSolve.clickLeft = true ) then
+			debugPrint( "hint: all" )
+			do while( grd.hint() )
+			loop
+		end if
 	end if
 
 	if( grd.playing = true ) then
@@ -128,5 +135,5 @@ do
 	gui.render()
 	screenunlock
 
-	sleep 50, 1
+	sleep 50
 loop
