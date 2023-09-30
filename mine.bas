@@ -2,6 +2,8 @@
 #cmdline "-s gui"
 #endif
 
+#define MINEFIND_VERSION  "1.0"
+
 '' =========================================================
 '' MINEFIND
 '' =========================================================
@@ -26,14 +28,16 @@ dim clk as CLOCK
 dim grd as GRID = GRID( 16, 16, 200, 400 )
 dim gui as FORM
 
-var byref lblTitle  = gui.addCaption( 320,  16, 100, 16, "M I N E F I N D" )
-var byref lblClock  = gui.addCaption( 320,  80, 100, 16, "Time: 0" )
-var byref lblResult = gui.addCaption( 220, 112, 300, 16, "" )
-var byref lblFlags  = gui.addCaption( 320, 144, 100, 16, "" )
-var byref btnNew1   = gui.addButton ( 320, 244, 100, 16, "Easy 6x13"  )
-var byref btnNew2   = gui.addButton ( 320, 276, 100, 16, "Medium 10x20" )
-var byref btnNew3   = gui.addButton ( 320, 308, 100, 16, "Hard 13x27"  )
-var byref btnQuit   = gui.addButton ( 320, 400, 100, 16, "Quit"  )
+var byref lblTitle   = gui.addCaption( 320,  16, 100, 16, "M I N E F I N D" )
+var byref lblVersion = gui.addCaption( 320,  40, 100, 16, "Version " & MINEFIND_VERSION )
+var byref lblClock   = gui.addCaption( 320,  80, 100, 16, "Time: 0" )
+var byref lblResult  = gui.addCaption( 220, 112, 300, 16, "" )
+var byref lblFlags   = gui.addCaption( 320, 144, 100, 16, "" )
+var byref btnNew1    = gui.addButton ( 320, 244, 100, 16, "Easy 6x13"  )
+var byref btnNew2    = gui.addButton ( 320, 276, 100, 16, "Medium 10x20" )
+var byref btnNew3    = gui.addButton ( 320, 308, 100, 16, "Hard 13x27"  )
+var byref btnQuit    = gui.addButton ( 320, 400, 100, 16, "Quit"  )
+
 
 dim as string k
 dim as long mx, my, mz, mb
